@@ -84,6 +84,10 @@ interface ProjectStore {
   // UI feedback
   savedTip: boolean;
   showSavedTip: () => void;
+
+  // View mode
+  viewMode: 'device' | 'main-system';
+  setViewMode: (mode: 'device' | 'main-system') => void;
 }
 
 function snap(s: ProjectStore): HistorySnapshot {
@@ -359,6 +363,9 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
     set({ savedTip: true });
     setTimeout(() => set({ savedTip: false }), 1800);
   },
+
+  viewMode: 'device',
+  setViewMode: (mode) => set({ viewMode: mode }),
 }));
 
 export { DEFAULT_DATA_TYPES };

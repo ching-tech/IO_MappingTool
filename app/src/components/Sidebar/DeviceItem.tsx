@@ -13,7 +13,7 @@ interface Props {
 }
 
 export function DeviceItem({ device, isDragging, isDragOver, onDragStart, onDragOver, onDrop, onDragEnd }: Props) {
-  const { selectedDeviceId, selectDevice, deleteDevice, renameDevice, checkDuplicateIP } = useProjectStore();
+  const { selectedDeviceId, selectDevice, deleteDevice, renameDevice, checkDuplicateIP, setViewMode } = useProjectStore();
   const isSelected = selectedDeviceId === device.id;
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState('');
@@ -80,7 +80,7 @@ export function DeviceItem({ device, isDragging, isDragOver, onDragStart, onDrag
         isDragOver ? 'device-item-drag-over' : '',
       ].filter(Boolean).join(' ')}
       draggable={!isEditing}
-      onClick={() => { if (!isEditing) selectDevice(device.id); }}
+      onClick={() => { if (!isEditing) { selectDevice(device.id); setViewMode('device'); } }}
       onDragStart={(e) => { e.dataTransfer.effectAllowed = 'move'; onDragStart(device.id); }}
       onDragOver={(e) => { e.preventDefault(); onDragOver(device.id); }}
       onDrop={(e) => { e.preventDefault(); onDrop(device.id); }}

@@ -13,7 +13,7 @@ const BRANDS: { value: MainSystemBrand; label: string }[] = [
 ];
 
 export function Toolbar() {
-  const { projectName, mainSystem, setProjectName, setMainSystem, currentFilePath, hasUnsavedChanges, savedTip } =
+  const { projectName, mainSystem, setProjectName, setMainSystem, currentFilePath, hasUnsavedChanges, savedTip, viewMode, setViewMode } =
     useProjectStore();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { handleNew, handleOpen, handleSave, handleSaveAs, handleExport, handleFileInputChange } = useFileActions();
@@ -47,6 +47,13 @@ export function Toolbar() {
       <div className="toolbar-actions">
         <button onClick={() => handleNew()}>🆕 新增</button>
         <button onClick={() => handleOpen(fileInputRef)}>📂 開啟</button>
+        <button
+          className={`view-toggle-btn${viewMode === 'main-system' ? ' active' : ''}`}
+          onClick={() => setViewMode(viewMode === 'main-system' ? 'device' : 'main-system')}
+          title="切換主系統視角"
+        >
+          🔀 主系統視角
+        </button>
         <button
           className={`save-btn${hasUnsavedChanges ? ' has-changes' : ''}`}
           onClick={handleSave}

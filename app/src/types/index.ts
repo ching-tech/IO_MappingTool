@@ -30,3 +30,14 @@ export interface ProjectData {
   dataTypes: string[];
   devices: Device[];
 }
+
+export interface MainSystemRow {
+  mainSystemAddress: string;
+  direction: 'recv' | 'send';
+  deviceName: string;
+  deviceAddress: string;
+  signalName: string;
+  dataType: string;
+  remark: string;
+  isDuplicate: boolean;
+}

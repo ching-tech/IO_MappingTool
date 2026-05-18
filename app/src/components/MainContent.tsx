@@ -5,6 +5,7 @@ import type { SortState } from './IOTable/IOTable';
 import { DataTypeManager } from './IOTable/DataTypeManager';
 import { BatchReplaceModal } from './IOTable/BatchReplaceModal';
 import { DeviceSettingsModal } from './IOTable/DeviceSettingsModal';
+import { MainSystemView } from './MainSystemView/MainSystemView';
 import { findConflictingAddresses } from '../utils/addressUtils';
 import type { MainSystemBrand } from '../types';
 
@@ -30,7 +31,7 @@ const PLACEHOLDERS: Record<MainSystemBrand, string> = {
 };
 
 export function MainContent() {
-  const { devices, selectedDeviceId, mainSystem, checkDuplicateIP } = useProjectStore();
+  const { devices, selectedDeviceId, mainSystem, checkDuplicateIP, viewMode } = useProjectStore();
   const [showBatchReplace, setShowBatchReplace] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [tableStates, setTableStates] = useState<Record<string, TablePersistState>>({});
@@ -54,6 +55,10 @@ export function MainContent() {
     );
     return findConflictingAddresses(allAddresses);
   }, [devices]);
+
+  if (viewMode === 'main-system') {
+    return <MainSystemView devices={devices} />;
+  }
 
   if (!device) {
     return (

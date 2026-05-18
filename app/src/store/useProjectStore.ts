@@ -29,7 +29,8 @@ interface ProjectStore {
   devices: Device[];
   selectedDeviceId: string | null;
   hasUnsavedChanges: boolean;
-  fileHandle: FileSystemFileHandle | null;
+  currentFilePath: string | null;
+  recentFiles: string[];
   past: HistorySnapshot[];
 
   // Project
@@ -37,7 +38,8 @@ interface ProjectStore {
   setMainSystem: (brand: MainSystemBrand) => void;
   loadProject: (data: ProjectData) => void;
   getProjectData: () => ProjectData;
-  setFileHandle: (handle: FileSystemFileHandle | null) => void;
+  setCurrentFilePath: (path: string | null) => void;
+  setRecentFiles: (paths: string[]) => void;
 
   // Devices
   addDevice: (name: string) => void;
@@ -78,6 +80,10 @@ interface ProjectStore {
   undo: () => void;
 
   markSaved: () => void;
+
+  // UI feedback
+  savedTip: boolean;
+  showSavedTip: () => void;
 }
 
 function snap(s: ProjectStore): HistorySnapshot {
@@ -103,12 +109,14 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   devices: [],
   selectedDeviceId: null,
   hasUnsavedChanges: false,
-  fileHandle: null,
+  currentFilePath: null,
+  recentFiles: [],
   past: [],
 
   setProjectName: (name) => set((s) => ({ past: pushPast(s.past, snap(s)), projectName: name, hasUnsavedChanges: true })),
   setMainSystem: (brand) => set((s) => ({ past: pushPast(s.past, snap(s)), mainSystem: brand, hasUnsavedChanges: true })),
-  setFileHandle: (handle) => set({ fileHandle: handle }),
+  setCurrentFilePath: (path) => set({ currentFilePath: path }),
+  setRecentFiles: (paths) => set({ recentFiles: paths }),
 
   loadProject: (data) => set({
     projectName: data.project,
@@ -345,6 +353,12 @@ export const useProjectStore = create<ProjectStore>((set, get) => ({
   }),
 
   markSaved: () => set({ hasUnsavedChanges: false }),
+
+  savedTip: false,
+  showSavedTip: () => {
+    set({ savedTip: true });
+    setTimeout(() => set({ savedTip: false }), 1800);
+  },
 }));
 
 export { DEFAULT_DATA_TYPES };

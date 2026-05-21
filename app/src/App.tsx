@@ -175,9 +175,12 @@ function App() {
 
       // Close-requested protection (read from window ref to always get latest value)
       unlistenClose = await appWindow.onCloseRequested(async (event) => {
-        const unsaved = (window as unknown as Record<string, unknown>).__ioHasUnsaved__ as boolean;
-        if (!unsaved) return;
         event.preventDefault();
+        const unsaved = (window as unknown as Record<string, unknown>).__ioHasUnsaved__ as boolean;
+        if (!unsaved) {
+          await appWindow.destroy();
+          return;
+        }
         const ok = await confirm('有未存儲的變更，確定要關閉嗎？', { title: 'IO 設備通訊對照表', kind: 'warning' });
         if (ok) await appWindow.destroy();
       });

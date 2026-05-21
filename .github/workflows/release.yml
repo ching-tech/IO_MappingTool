@@ -45,10 +45,45 @@ jobs:
           releaseName: 'IO 設備通訊對照表 ${{ github.ref_name }}'
           releaseBody: |
             ## 更新內容
-            請參閱 [CHANGELOG](https://github.com/wkltueserc20/IO_lIST/commits/main) 了解詳細變更。
+            請參閱 [提交記錄](https://github.com/wkltueserc20/IO_lIST/commits/main) 了解詳細變更。
+
+            ---
 
             ## 安裝說明
-            - **Windows**：下載 `.msi` 或 `.exe` 安裝檔
+
+            1. 下載下方 **Assets** 中的 `IO 設備通訊對照表_*_x64-setup.exe`
+            2. 雙擊執行安裝檔，依照精靈步驟完成安裝
+            3. 安裝完成後可從桌面或開始選單啟動
+
+            > **⚠️ Windows SmartScreen 警告**
+            > 首次執行安裝檔時，Windows 可能出現「已保護您的電腦」的提示。
+            > 這是因為應用程式尚未取得 Microsoft 的程式碼簽署憑證，並非病毒或惡意程式。
+            >
+            > 略過方式：點擊「**更多資訊**」→ 點擊「**仍要執行**」即可繼續安裝。
+
+            ---
+
+            ## 基本操作
+
+            | 功能 | 操作方式 |
+            |------|----------|
+            | 新增專案 | 工具列「新增」或 `Ctrl+N` |
+            | 開啟檔案 | 工具列「開啟」或 `Ctrl+O`，支援雙擊 `.json` 直接開啟 |
+            | 儲存 | `Ctrl+S` |
+            | 另存新檔 | `Ctrl+Shift+S` |
+            | 匯出 Excel | 工具列「匯出 Excel」 |
+            | 復原 / 重做 | `Ctrl+Z` / `Ctrl+Y` |
+            | 全域搜尋 | `Ctrl+F` |
+            | 新增設備 | 左側側欄底部「+ 新增設備」 |
+            | 切換視角 | 工具列右側「設備視角 ↔ 主系統視角」 |
+
+            ---
+
+            ## 系統需求
+
+            - **作業系統**：Windows 10 / 11（64 位元）
+            - **WebView2**：Windows 11 內建，Windows 10 需安裝（通常已隨 Edge 自動安裝）
+            - **硬碟空間**：約 10 MB
           releaseDraft: true
           prerelease: false
           projectPath: '.'

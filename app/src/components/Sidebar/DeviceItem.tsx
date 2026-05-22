@@ -11,10 +11,9 @@ interface Props {
   onDragStart: (id: string) => void;
   onDragOver: (id: string) => void;
   onDrop: (id: string) => void;
-  onDragEnd: () => void;
 }
 
-export function DeviceItem({ device, isDragging, isDragOver, onDragStart, onDragOver, onDrop, onDragEnd }: Props) {
+export function DeviceItem({ device, isDragging, isDragOver, onDragStart, onDragOver, onDrop }: Props) {
   const { selectedDeviceId, selectDevice, deleteDevice, renameDevice, cloneDevice, checkDuplicateIP, setViewMode, connectionStatus, setConnectionStatus, monitoringDevices, startMonitoring, stopMonitoring } = useProjectStore();
   const isSelected = selectedDeviceId === device.id;
   const [isEditing, setIsEditing] = useState(false);

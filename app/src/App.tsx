@@ -46,7 +46,7 @@ interface HighlightTarget {
 }
 
 function App() {
-  const { hasUnsavedChanges, undo, redo, projectName, setRecentFiles, currentFilePath, getProjectData, markSaved, showSavedTip, devices, selectDevice, setViewMode, monitoringDevices, pollingInterval, setPlcValues } =
+  const { hasUnsavedChanges, undo, redo, projectName, setRecentFiles, currentFilePath, getProjectData, markSaved, showSavedTip, devices, selectDevice, setViewMode, monitoringDevices, pollingInterval } =
     useProjectStore();
   const { handleNew, handleOpen, handleSave, handleSaveAs, handleExport, handleOpenPath, handleImportExcel, handleConfirmImport } = useFileActions();
   const [showShortcuts, setShowShortcuts] = useState(false);

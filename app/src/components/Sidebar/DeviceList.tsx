@@ -54,7 +54,6 @@ export function DeviceList({ filterKeyword }: Props) {
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          onDragEnd={handleDragEnd}
         />
       ))}
     </div>

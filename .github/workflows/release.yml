@@ -46,6 +46,13 @@ jobs:
           releaseBody: |
             ## 更新內容
 
+            ### v0.1.4
+            - **PLC 通訊效能優化**
+              - 連線池（Connection Pool）：TCP 連線在輪詢 tick 間複用，避免每次重新握手
+              - 三菱 Binary/ASCII 模式快取：首次偵測後不再重新探測
+              - 連續地址批次讀取：相鄰 Word 地址（間距 ≤ 4）自動合併為單一 RDS / Batch Read（最多 100 words 一次）
+            - **Log 等級優化**：正式版（Release）只記錄 Warn 以上，避免高頻輪詢導致 log 檔膨脹
+
             ### v0.1.3
             - **新增 PLC 即時監控**：設備清單 📡 按鈕，即時讀取 KEYENCE / 三菱 PLC IO 點位值
               - KEYENCE KV Upper-Link Protocol（KV-XLE02 / KV-EP21 / 內建乙太網路）

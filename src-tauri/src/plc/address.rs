@@ -6,7 +6,7 @@ pub enum PlcDevice {
 }
 
 /// Parse address strings like: DM100, DM100.5, M5, MR3, W10, R20, B5, D100
-pub fn parse_device_address(s: &str) -> Option<PlcDevice> {
+pub fn parse_device_address(s: &str, is_keyence: bool) -> Option<PlcDevice> {
     let s = s.trim();
     if s.is_empty() {
         return None;
@@ -18,7 +18,7 @@ pub fn parse_device_address(s: &str) -> Option<PlcDevice> {
         let bit_part = &s[dot_pos + 1..];
         if let Ok(bit) = bit_part.parse::<u8>() {
             if bit < 16 {
-                if let Some(PlcDevice::Word { prefix, num }) = parse_device_address(word_part) {
+                if let Some(PlcDevice::Word { prefix, num }) = parse_device_address(word_part, is_keyence) {
                     return Some(PlcDevice::BitInWord { prefix, num, bit });
                 }
             }
@@ -38,13 +38,21 @@ pub fn parse_device_address(s: &str) -> Option<PlcDevice> {
 
     // Classify by prefix
     match prefix.as_str() {
-        // Word devices (KEYENCE & Mitsubishi)
-        "DM" | "D" | "W" | "R" | "TN" | "CN" | "SD" | "ZR" | "FM" => {
+        // Word devices (KEYENCE & Mitsubishi, excluding R which is conditional)
+        "DM" | "D" | "W" | "TN" | "CN" | "SD" | "ZR" | "FM" => {
             Some(PlcDevice::Word { prefix, num })
         }
-        // Bit-only devices
+        // Bit-only devices (KEYENCE & Mitsubishi)
         "M" | "MR" | "LR" | "B" | "F" | "V" | "TC" | "CC" | "SB" | "SM" => {
             Some(PlcDevice::Bool { prefix, num })
+        }
+        // R is a Bit device for KEYENCE, but a Word device for Mitsubishi
+        "R" => {
+            if is_keyence {
+                Some(PlcDevice::Bool { prefix, num })
+            } else {
+                Some(PlcDevice::Word { prefix, num })
+            }
         }
         _ => None,
     }

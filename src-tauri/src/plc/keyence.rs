@@ -110,8 +110,8 @@ fn read_word(stream: &mut TcpStream, prefix: &str, num: u32) -> Result<i32, Stri
         .map_err(|_| format!("Word解析失敗: '{}'", resp))
 }
 
-fn read_bit(stream: &mut TcpStream, prefix: &str, num: u32) -> Result<String, String> {
-    let cmd = format!("RD {}{}\r", prefix, num);
+fn read_bit(stream: &mut TcpStream, address: &str) -> Result<String, String> {
+    let cmd = format!("RD {}\r", address);
     let resp = send_recv(stream, &cmd)?;
     match resp.as_str() {
         "0" => Ok("OFF".to_string()),
@@ -178,7 +178,7 @@ fn do_batch(stream: &mut TcpStream, requests: &[ReadRequest]) -> (Vec<ReadResult
     let mut biw_map: HashMap<(String, u32), Vec<(usize, u8, String)>> = HashMap::new();
 
     for (idx, req) in requests.iter().enumerate() {
-        match parse_device_address(&req.address) {
+        match parse_device_address(&req.address, true) {
             Some(PlcDevice::Word { prefix, num }) => {
                 let wn = match req.data_type.to_uppercase().as_str() {
                     "DWORD" | "UDINT" | "DINT" | "FLOAT" => 2,
@@ -207,8 +207,8 @@ fn do_batch(stream: &mut TcpStream, requests: &[ReadRequest]) -> (Vec<ReadResult
     }
 
     // 逐一讀取 BOOL（Bit 裝置，不支援 RDS）
-    for (idx, prefix, num, addr) in &bool_list {
-        match read_bit(stream, prefix, *num) {
+    for (idx, _prefix, _num, addr) in &bool_list {
+        match read_bit(stream, addr) {
             Ok(v) => out[*idx] = ReadResult { address: addr.clone(), value: Some(v), error: None },
             Err(e) => {
                 if is_io_err(&e) { had_io = true; }

@@ -424,7 +424,7 @@ fn do_batch(stream: &mut TcpStream, mode: MelsecMode, requests: &[ReadRequest]) 
     let mut biw_map: HashMap<(String, u32), Vec<(usize, u8, String)>> = HashMap::new();
 
     for (idx, req) in requests.iter().enumerate() {
-        match parse_device_address(&req.address) {
+        match parse_device_address(&req.address, false) {
             Some(PlcDevice::Word { prefix, num }) => {
                 let wn = match req.data_type.to_uppercase().as_str() {
                     "DWORD" | "UDINT" | "DINT" | "FLOAT" => 2,

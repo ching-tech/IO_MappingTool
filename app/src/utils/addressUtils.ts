@@ -7,11 +7,29 @@ interface ParsedAddress {
   bit?: number;
   index?: number;
   max?: number;
+  wordLen?: number; // Keep track of word segment length for padding
 }
 
 export function parseAddress(addr: string): ParsedAddress | null {
   if (!addr || typeof addr !== 'string') return null;
   const trimmed = addr.trim().toUpperCase();
+
+  // R 類型 (KEYENCE 控制中繼器，格式如 R000 或 R1205，末尾兩位代表 00~15 位元)
+  // 優先度高於一般 Word 匹配，將其當作 bit-in-word 以便與對應通道進行衝突檢測
+  const rMatch = trimmed.match(/^(R)(\d+)(\d{2})$/);
+  if (rMatch) {
+    const wordNum = parseInt(rMatch[2]);
+    const bitNum = parseInt(rMatch[3]);
+    if (bitNum < 16) {
+      return {
+        type: 'bit-in-word',
+        prefix: 'R',
+        word: wordNum,
+        bit: bitNum,
+        wordLen: rMatch[2].length,
+      };
+    }
+  }
 
   // M 類型（M0~M99），嚴格匹配 M 後面跟數字，排除 MR
   const mMatch = trimmed.match(/^(M)(\d+)$/);
@@ -58,6 +76,19 @@ export function incrementAddress(addr: string): string {
   }
 
   if (parsed.type === 'bit-in-word') {
+    // 🌟 特殊處理 KEYENCE R 繼電器，避免前導零丟失並實現每 16 位元進位
+    if (parsed.prefix === 'R' && parsed.wordLen !== undefined) {
+      let newBit = parsed.bit! + 1;
+      let newWord = parsed.word!;
+      if (newBit >= 16) {
+        newBit = 0;
+        newWord += 1;
+      }
+      const wordStr = newWord.toString().padStart(parsed.wordLen, '0');
+      const bitStr = newBit.toString().padStart(2, '0');
+      return `${parsed.prefix}${wordStr}${bitStr}`;
+    }
+
     const newBit = parsed.bit! + 1;
     if (newBit >= 16) {
       return `${parsed.prefix}${parsed.word! + 1}.0`;

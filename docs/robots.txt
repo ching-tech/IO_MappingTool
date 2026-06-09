@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://ching-tech.github.io/IO_MappingTool/sitemap.xml
